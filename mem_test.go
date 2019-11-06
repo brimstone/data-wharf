@@ -4,11 +4,35 @@ import (
 	"testing"
 	"time"
 
+	wharf "github.com/brimstone/data-wharf"
 	"github.com/brimstone/data-wharf/pkg/lakemem"
 	"github.com/brimstone/data-wharf/pkg/martcounter"
 	"github.com/brimstone/data-wharf/pkg/sourceloop"
 	"github.com/brimstone/data-wharf/pkg/warehousemem"
+	"github.com/brimstone/logger"
 )
+
+type Counter struct{}
+
+func (c *Counter) Backfill() bool {
+	return true
+}
+
+func (c *Counter) Callback(w wharf.Warehouse, key string, version int, payload interface{}) error {
+	if key != "sourceloop" {
+		return nil
+	}
+	if version != 1 {
+		return nil
+	}
+	log := logger.New()
+	log.Debug("Got the callback!",
+		log.Field("key", key),
+		log.Field("version", version),
+		log.Field("payload", payload),
+	)
+	return w.Inc("sourceloop-count")
+}
 
 func Test_Simple(t *testing.T) {
 
@@ -33,6 +57,8 @@ func Test_Simple(t *testing.T) {
 	w, err := warehousemem.New(&warehousemem.Options{
 		Lake: l,
 	})
+
+	w.AddJob(&Counter{})
 
 	// Create a mart to show off the data
 	m, err := martcounter.New(&martcounter.Options{

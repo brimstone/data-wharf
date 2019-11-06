@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+count="$(< warehouse/random/count.txt)"
+largest="$(< warehouse/random/largest.txt)"
+
+echo "Largest: $largest"
+echo "Total: $count"

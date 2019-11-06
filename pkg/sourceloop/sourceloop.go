@@ -36,6 +36,7 @@ func (s *sourceloop) run() {
 		select {
 		case <-s.ticker.C:
 			s.lake.Insert("sourceloop", 1, i)
+			i++
 		}
 	}
 }

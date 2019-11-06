@@ -1,0 +1,11 @@
+#!/bin/bash
+set -ueo pipefail
+mkdir -p warehouse/random
+find lake/random/1/ -name bash.txt -print0 \
+| xargs -0 cat \
+| sort -rn \
+| head -n 1 \
+> warehouse/random/largest.txt
+find lake/random/1/ -name bash.txt \
+| wc -l \
+> warehouse/random/count.txt

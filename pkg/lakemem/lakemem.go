@@ -11,7 +11,7 @@ type Options struct {
 
 type lakemem struct {
 	mem       sync.Map
-	callbacks []wharf.LakeCallback
+	callbacks []wharf.Callback
 }
 
 type mapKey struct {
@@ -24,7 +24,7 @@ func New(options ...*Options) (*lakemem, error) {
 	return l, nil
 }
 
-func (l *lakemem) AddCallback(c wharf.LakeCallback) (cid string, err error) {
+func (l *lakemem) AddCallback(c wharf.Callback) (cid string, err error) {
 	l.callbacks = append(l.callbacks, c)
 	return "", nil
 }

@@ -1,9 +1,8 @@
 package martcounter
 
 import (
-	"fmt"
-
 	wharf "github.com/brimstone/data-wharf"
+	"github.com/brimstone/logger"
 )
 
 type Options struct {
@@ -14,11 +13,23 @@ type martcounter struct {
 	warehouse wharf.Warehouse
 }
 
-func New(o ...*Options) (*martcounter, error) {
+func New(options ...*Options) (*martcounter, error) {
 	m := &martcounter{}
+	for _, o := range options {
+		if o.Warehouse != nil {
+			m.warehouse = o.Warehouse
+		}
+	}
 	return m, nil
 }
 
 func (m *martcounter) Show() {
-	fmt.Println("Mart counter!")
+	log := logger.New()
+	c, err := m.warehouse.GetOne("sourceloop-count")
+	if err != nil {
+		panic(err)
+	}
+	log.Info("Total",
+		log.Field("counts", c),
+	)
 }
